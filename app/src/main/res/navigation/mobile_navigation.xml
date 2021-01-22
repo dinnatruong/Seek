@@ -9,7 +9,26 @@
         android:id="@+id/navigation_home"
         android:name="com.example.seek.ui.home.HomeFragment"
         android:label="@string/home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home">
+
+        <action
+            android:id="@+id/navigate_to_activity_details"
+            app:destination="@id/activity_details" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/activity_details"
+        android:name="com.example.seek.ui.activitydetails.ActivityDetailsFragment"
+        android:label="@string/activity_details"
+        tools:layout="@layout/fragment_activity_details">
+
+        <argument
+            android:name="category_title"
+            app:argType="string"
+            android:defaultValue=""/>
+
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_saved"

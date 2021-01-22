@@ -25,52 +25,52 @@ enum class Category {
             RANDOM to CategoryItem(
                 R.string.random,
                 R.drawable.ic_favorite_24dp,
-                R.color.yellow
+                R.color.slate
             ),
             EDUCATIONAL to CategoryItem(
                 R.string.educational,
                 R.drawable.ic_favorite_24dp,
-                R.color.purple_200
+                R.color.pink
             ),
             SOCIAL to CategoryItem(
                 R.string.social,
                 R.drawable.ic_favorite_24dp,
-                R.color.teal_200
+                R.color.blue
             ),
             DIY to CategoryItem(
                 R.string.diy,
                 R.drawable.ic_favorite_24dp,
-                R.color.purple_500
+                R.color.green
             ),
             MUSIC to CategoryItem(
                 R.string.music,
                 R.drawable.ic_favorite_24dp,
-                R.color.teal_700
+                R.color.purple_200
             ),
             RELAXATION to CategoryItem(
                 R.string.relaxation,
                 R.drawable.ic_favorite_24dp,
-                R.color.yellow
+                R.color.concrete
             ),
             CHARITY to CategoryItem(
                 R.string.charity,
                 R.drawable.ic_favorite_24dp,
-                R.color.black
+                R.color.lime
             ),
             COOKING to CategoryItem(
                 R.string.cooking,
                 R.drawable.ic_favorite_24dp,
-                R.color.black
+                R.color.salmon
             ),
             BUSYWORK to CategoryItem(
                 R.string.busywork,
                 R.drawable.ic_favorite_24dp,
-                R.color.black
+                R.color.gray
             ),
             RECREATIONAL to CategoryItem(
                 R.string.recreational,
                 R.drawable.ic_favorite_24dp,
-                R.color.black
+                R.color.sky
             )
         )
     }
