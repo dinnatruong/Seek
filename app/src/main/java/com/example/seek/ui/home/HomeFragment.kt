@@ -42,8 +42,7 @@ class HomeFragment : BaseFragment() {
         subscribe(
             categoryAdapter.getEscalateIncidentClickSubject()
                 .subscribe {
-                    val title = getString(it.categoryItem.titleId)
-                    val directions = HomeFragmentDirections.navigateToActivityDetails().setCategoryTitle(title)
+                    val directions = HomeFragmentDirections.navigateToActivityDetails(it.categoryItem)
 
                     with(findNavController()) {
                         currentDestination?.getAction(directions.actionId)?.let {

@@ -24,9 +24,8 @@
         tools:layout="@layout/fragment_activity_details">
 
         <argument
-            android:name="category_title"
-            app:argType="string"
-            android:defaultValue=""/>
+            android:name="category_item"
+            app:argType="com.example.seek.data.model.CategoryItem" />
 
     </fragment>
 

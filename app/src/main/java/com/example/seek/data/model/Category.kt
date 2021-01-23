@@ -1,16 +1,17 @@
 package com.example.seek.data.model
 
 import com.example.seek.R
+import java.io.Serializable
 
 data class CategoryItem (
     val titleId: Int,
     val iconId: Int? = null,
     val backgroundId: Int? = null
-)
+) : Serializable
 
 enum class Category {
     RANDOM,
-    EDUCATIONAL,
+    EDUCATION,
     SOCIAL,
     DIY,
     MUSIC,
@@ -27,8 +28,8 @@ enum class Category {
                 R.drawable.ic_favorite_24dp,
                 R.color.slate
             ),
-            EDUCATIONAL to CategoryItem(
-                R.string.educational,
+            EDUCATION to CategoryItem(
+                R.string.education,
                 R.drawable.ic_favorite_24dp,
                 R.color.pink
             ),
