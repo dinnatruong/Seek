@@ -1,8 +1,7 @@
-package com.example.seek.data.repository
+package com.example.seek.data.remote
 
 import androidx.lifecycle.MutableLiveData
 import com.example.seek.data.model.Activity
-import com.example.seek.data.model.Category
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -11,7 +10,7 @@ object ActivityRepository  {
 
     val activity = MutableLiveData<Activity>()
 
-    fun getActivityDetails(type: String): MutableLiveData<Activity> {
+    fun getActivityDetailsByType(type: String): MutableLiveData<Activity> {
         val call = RetrofitClient.boredApiInterface.getActivityByType(type)
 
         call.enqueue(object: Callback<Activity> {

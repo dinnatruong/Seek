@@ -31,7 +31,7 @@
 
     <fragment
         android:id="@+id/navigation_saved"
-        android:name="com.example.seek.ui.saved.SavedFragment"
+        android:name="com.example.seek.ui.saved.SavedActivitiesFragment"
         android:label="@string/saved"
         tools:layout="@layout/fragment_saved" />
 

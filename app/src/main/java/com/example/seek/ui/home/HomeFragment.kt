@@ -40,7 +40,7 @@ class HomeFragment : BaseFragment() {
         })
 
         subscribe(
-            categoryAdapter.getEscalateIncidentClickSubject()
+            categoryAdapter.getCategoryClickSubject()
                 .subscribe {
                     val directions = HomeFragmentDirections.navigateToActivityDetails(it.categoryItem)
 

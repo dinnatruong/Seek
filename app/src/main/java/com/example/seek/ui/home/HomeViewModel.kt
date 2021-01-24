@@ -18,5 +18,4 @@ class HomeViewModel : ViewModel() {
         return categories
     }
 
-
 }

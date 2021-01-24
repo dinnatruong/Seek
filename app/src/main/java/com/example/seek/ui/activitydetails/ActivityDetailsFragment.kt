@@ -61,5 +61,11 @@ class ActivityDetailsFragment : BaseFragment() {
             }
         )
 
+        subscribe(
+            saveButton.clicks().subscribe {
+                context?.let { activityDetailsViewModel.saveActivity(it) }
+                findNavController().popBackStack()
+            }
+        )
     }
 }

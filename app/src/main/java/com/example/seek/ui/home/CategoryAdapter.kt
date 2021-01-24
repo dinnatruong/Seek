@@ -13,7 +13,7 @@ import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.item_category.view.*
 
-class CategoryAdapter() : RecyclerView.Adapter<CategoryAdapter.ViewHolder>() {
+class CategoryAdapter : RecyclerView.Adapter<CategoryAdapter.ViewHolder>() {
 
     data class CategoryClickUiEvent(val categoryItem: CategoryItem)
 
@@ -34,7 +34,7 @@ class CategoryAdapter() : RecyclerView.Adapter<CategoryAdapter.ViewHolder>() {
         return position.toLong()
     }
 
-    fun getEscalateIncidentClickSubject(): Observable<CategoryClickUiEvent> {
+    fun getCategoryClickSubject(): Observable<CategoryClickUiEvent> {
         return clickSubject
     }
 
@@ -48,30 +48,30 @@ class CategoryAdapter() : RecyclerView.Adapter<CategoryAdapter.ViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val escalationLevel = categories[position]
-        holder.bind(escalationLevel, context, clickSubject)
+        val categoryItem = categories[position]
+        holder.bind(categoryItem, context, clickSubject)
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(category: CategoryItem, context: Context, clickSubject: PublishSubject<CategoryClickUiEvent>) {
+        fun bind(categoryItem: CategoryItem, context: Context, clickSubject: PublishSubject<CategoryClickUiEvent>) {
 
             // Set category title
-            itemView.categoryTitle.text = context.resources.getString(category.titleId)
+            itemView.categoryTitle.text = context.resources.getString(categoryItem.titleId)
 
             // Set category icon
-            category.iconId?.let {
+            categoryItem.iconId?.let {
                 itemView.categoryIcon.setImageResource(it)
             }
 
             // Set category background color
-            category.backgroundId?.let {
+            categoryItem.backgroundId?.let {
                 val backgroundColor = ContextCompat.getColor(context, it)
                 itemView.categoryBackground.background.setTint(backgroundColor)
             }
 
             // Set category button click listener
             itemView.clicks()
-                .map { CategoryClickUiEvent(category) }
+                .map { CategoryClickUiEvent(categoryItem) }
                 .subscribe(clickSubject)
         }
     }
