@@ -59,9 +59,9 @@ class CategoryAdapter : RecyclerView.Adapter<CategoryAdapter.ViewHolder>() {
             itemView.categoryTitle.text = context.resources.getString(categoryItem.titleId)
 
             // Set category icon
-            categoryItem.iconId?.let {
-                itemView.categoryIcon.setImageResource(it)
-            }
+//            categoryItem.iconId?.let {
+//                itemView.categoryIcon.setImageResource(it)
+//            }
 
             // Set category background color
             categoryItem.backgroundId?.let {

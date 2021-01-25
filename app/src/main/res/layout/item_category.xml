@@ -30,7 +30,6 @@
         android:layout_width="0dp"
         android:layout_weight="0.33"
         android:layout_height="match_parent"
-        android:src="@drawable/ic_favorite_24dp"
         android:layout_gravity="top"
         android:adjustViewBounds="true"/>
 
