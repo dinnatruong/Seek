@@ -17,7 +17,8 @@ import kotlinx.android.synthetic.main.fragment_activity_details.*
 
 class ActivityDetailsFragment : BaseFragment() {
 
-    private lateinit var categoryItem: CategoryItem
+    private var categoryItem: CategoryItem? = null
+    private var activityKey: String? = null
     private val args by navArgs<ActivityDetailsFragmentArgs>()
     private lateinit var activityDetailsViewModel: ActivityDetailsViewModel
 
@@ -33,24 +34,36 @@ class ActivityDetailsFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        categoryItem = args.categoryItem
+        args.categoryItem?.let {
+            categoryItem = it
+        }
+
+        args.activityKey?.let {
+            activityKey = it
+        }
+
         activityDetailsViewModel = ViewModelProvider(this).get(ActivityDetailsViewModel::class.java)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val activityType = getString(categoryItem.titleId)
-        activityDetailsViewModel.getActivityDetails(activityType)
-            ?.observe(viewLifecycleOwner, Observer {
-                activityDescription.text = it?.activity
+        val activityType = categoryItem?.titleId?.let { getString(it) }
+
+        // Fetch and display activity description
+        activityDetailsViewModel.getActivityDetails(activityType, activityKey)
+
+        activityDetailsViewModel.activityDetails
+            ?.observe(viewLifecycleOwner, Observer { activityDetails ->
+                activityDescription.text = activityDetails?.activity
             })
 
+        // Set background colour based on activity category
         context?.let {
             descriptionBackground.background.setTint(
                 ContextCompat.getColor(
                     it,
-                    categoryItem.backgroundId ?: R.color.slate
+                    categoryItem?.backgroundId ?: R.color.slate
                 )
             )
         }
@@ -64,7 +77,6 @@ class ActivityDetailsFragment : BaseFragment() {
         subscribe(
             saveButton.clicks().subscribe {
                 context?.let { activityDetailsViewModel.saveActivity(it) }
-                findNavController().popBackStack()
             }
         )
     }

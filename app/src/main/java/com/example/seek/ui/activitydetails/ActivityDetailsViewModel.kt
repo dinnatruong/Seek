@@ -6,47 +6,80 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.seek.data.model.Activity
-import com.example.seek.data.model.ActivityEntity
 import com.example.seek.data.local.ActivityDBRepository
 import com.example.seek.data.local.ActivityDatabase
-import com.example.seek.data.remote.ActivityRepository
+import com.example.seek.data.remote.RetrofitClient
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Collections.shuffle
 
 class ActivityDetailsViewModel : ViewModel() {
 
-    var activityDetails: MutableLiveData<Activity>? = null
+    private var _activityDetails = MutableLiveData<Activity>().apply {
+        value = null
+    }
+    val activityDetails: LiveData<Activity>? = _activityDetails
+    private var subscription: Disposable? = null
 
-    fun getActivityDetails(type: String): LiveData<Activity>? {
-        var activityType = type.toLowerCase()
 
-        if (activityType == "random") {
-            val categories = listOf(
-                "education",
-                "social",
-                "diy",
-                "music",
-                "relaxation",
-                "charity",
-                "cooking",
-                "busywork",
-                "recreational"
-            )
-            shuffle(categories)
-            activityType = categories.first()
-        }
+    fun getActivityDetails(type: String?, key: String?) {
+        type?.let { getActivityDetailsByCategory(it.toLowerCase()) }
+        key?.let { getActivityDetailsByKey(it) }
+    }
 
-        activityDetails = ActivityRepository.getActivityDetailsByType(activityType)
-        return activityDetails
+    private fun getActivityDetailsByCategory(activityType: String) {
+        val type = if (activityType == "random") getRandomCategory() else activityType
+
+        subscription =
+            RetrofitClient.boredApiInterface.getActivityByType(type)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    { result -> onGetActivityDetailsSuccess(result) },
+                    { onGetActivityDetailsError() })
+    }
+
+    private fun getRandomCategory(): String {
+        val categories = listOf(
+            "education",
+            "social",
+            "diy",
+            "music",
+            "relaxation",
+            "charity",
+            "cooking",
+            "busywork",
+            "recreational"
+        )
+        shuffle(categories)
+        return categories.first()
+    }
+
+    private fun getActivityDetailsByKey(key: String) {
+        subscription =
+            RetrofitClient.boredApiInterface.getActivityByKey(key)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    { result -> onGetActivityDetailsSuccess(result) },
+                    { onGetActivityDetailsError() })
+    }
+
+    private fun onGetActivityDetailsSuccess(result: Activity) {
+        _activityDetails.value = result
+    }
+
+    private fun onGetActivityDetailsError() {
+        TODO("Not yet implemented")
     }
 
     fun saveActivity(context: Context) {
-        val activityEntity = activityDetails?.value?.key?.let { ActivityEntity(activityId = it) }
-
+        val activityEntity = activityDetails?.value?.key?.let { Activity(key = it) }
         val activityDao = ActivityDatabase.getDatabase(context).activityDao()
-        val activityDBRepository =
-            ActivityDBRepository(activityDao)
+        val activityDBRepository = ActivityDBRepository(activityDao)
 
         activityEntity?.let {
             viewModelScope.launch(Dispatchers.IO) {
@@ -57,6 +90,7 @@ class ActivityDetailsViewModel : ViewModel() {
 
     override fun onCleared() {
         super.onCleared()
-        activityDetails?.value = null
+        _activityDetails.value = null
+        subscription?.dispose()
     }
 }

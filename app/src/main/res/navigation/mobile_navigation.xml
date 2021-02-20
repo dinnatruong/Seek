@@ -25,7 +25,13 @@
 
         <argument
             android:name="category_item"
-            app:argType="com.example.seek.data.model.CategoryItem" />
+            app:argType="com.example.seek.data.model.CategoryItem"
+            app:nullable="true"/>
+
+        <argument
+            android:name="activity_key"
+            app:argType="string"
+            app:nullable="true"/>
 
     </fragment>
 
@@ -33,6 +39,12 @@
         android:id="@+id/navigation_saved"
         android:name="com.example.seek.ui.saved.SavedActivitiesFragment"
         android:label="@string/saved"
-        tools:layout="@layout/fragment_saved" />
+        tools:layout="@layout/fragment_saved">
+
+        <action
+            android:id="@+id/navigate_to_activity_details"
+            app:destination="@id/activity_details" />
+
+    </fragment>
 
 </navigation>

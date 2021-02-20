@@ -5,9 +5,9 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.seek.data.model.ActivityDao
-import com.example.seek.data.model.ActivityEntity
+import com.example.seek.data.model.Activity
 
-@Database(entities = [ActivityEntity::class], version = 1, exportSchema = false)
+@Database(entities = [Activity::class], version = 1, exportSchema = false)
 abstract class ActivityDatabase : RoomDatabase() {
 
     abstract fun activityDao(): ActivityDao

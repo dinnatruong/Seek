@@ -28,6 +28,7 @@ class HomeFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Set up RecyclerView for categories
         with(categoriesRecyclerView) {
             layoutManager = androidx.recyclerview.widget.GridLayoutManager(context, 2)
             adapter = categoryAdapter
@@ -35,14 +36,18 @@ class HomeFragment : BaseFragment() {
 
         context?.let { categoryAdapter.setContext(it) }
 
+        // Fetch and display activity categories
         homeViewModel.getCategories().observe(viewLifecycleOwner, Observer {
             categoryAdapter.setData(it)
         })
 
+        // Set click listener for categories
         subscribe(
             categoryAdapter.getCategoryClickSubject()
                 .subscribe {
-                    val directions = HomeFragmentDirections.navigateToActivityDetails(it.categoryItem)
+
+                    // Navigate to activity details
+                    val directions = HomeFragmentDirections.navigateToActivityDetails(it.categoryItem, null)
 
                     with(findNavController()) {
                         currentDestination?.getAction(directions.actionId)?.let {

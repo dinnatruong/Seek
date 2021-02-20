@@ -9,7 +9,7 @@ object RetrofitClient {
 
     const val BASE_URL = "http://www.boredapi.com"
 
-    val retrofitClient: Retrofit.Builder by lazy {
+    private val retrofitClient: Retrofit.Builder by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
