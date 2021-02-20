@@ -21,9 +21,16 @@ class ActivityDetailsViewModel : ViewModel() {
     private var _activityDetails = MutableLiveData<Activity>().apply {
         value = null
     }
-    val activityDetails: LiveData<Activity>? = _activityDetails
-    private var subscription: Disposable? = null
 
+    val activityDetails: LiveData<Activity>? = _activityDetails
+
+    private var _errorMessage = MutableLiveData<String>().apply {
+        value = null
+    }
+
+    val errorMessage: LiveData<String>? = _errorMessage
+
+    private var subscription: Disposable? = null
 
     fun getActivityDetails(type: String?, key: String?) {
         type?.let { getActivityDetailsByCategory(it.toLowerCase()) }
@@ -73,7 +80,7 @@ class ActivityDetailsViewModel : ViewModel() {
     }
 
     private fun onGetActivityDetailsError() {
-        TODO("Not yet implemented")
+        _errorMessage.value = "Failed to fetch activity details."
     }
 
     fun saveActivity(context: Context) {
@@ -91,6 +98,7 @@ class ActivityDetailsViewModel : ViewModel() {
     override fun onCleared() {
         super.onCleared()
         _activityDetails.value = null
+        _errorMessage.value = null
         subscription?.dispose()
     }
 }

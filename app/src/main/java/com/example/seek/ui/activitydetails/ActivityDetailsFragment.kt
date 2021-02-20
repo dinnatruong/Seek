@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
@@ -58,6 +59,12 @@ class ActivityDetailsFragment : BaseFragment() {
                 activityDescription.text = activityDetails?.activity
             })
 
+        // Display any error messages
+        activityDetailsViewModel.errorMessage
+            ?.observe(viewLifecycleOwner, Observer { errorMessage ->
+                errorMessage?.let { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() }
+            })
+
         // Set background colour based on activity category
         context?.let {
             descriptionBackground.background.setTint(
@@ -68,12 +75,14 @@ class ActivityDetailsFragment : BaseFragment() {
             )
         }
 
+        // Set click listener for home button
         subscribe(
             homeButton.clicks().subscribe {
                 findNavController().popBackStack()
             }
         )
 
+        // Set click listener for save button
         subscribe(
             saveButton.clicks().subscribe {
                 context?.let { activityDetailsViewModel.saveActivity(it) }

@@ -17,7 +17,14 @@ class SavedActivitiesViewModel : ViewModel() {
     private val _savedActivities = MutableLiveData<List<Activity>>().apply {
         value = emptyList()
     }
+
     val savedActivities: LiveData<List<Activity>> = _savedActivities
+
+    private var _errorMessage = MutableLiveData<String>().apply {
+        value = null
+    }
+
+    val errorMessage: LiveData<String>? = _errorMessage
 
     private var subscription: Disposable? = null
 
@@ -49,11 +56,12 @@ class SavedActivitiesViewModel : ViewModel() {
     }
 
     private fun onGetSavedActivityDetailsError(){
-        TODO("Not yet implemented")
+        _errorMessage.value = "Failed to fetch activity details."
     }
 
     override fun onCleared() {
         super.onCleared()
+        _errorMessage.value = null
         subscription?.dispose()
     }
 }
