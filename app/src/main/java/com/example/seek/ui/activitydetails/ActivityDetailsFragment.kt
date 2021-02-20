@@ -57,6 +57,21 @@ class ActivityDetailsFragment : BaseFragment() {
         activityDetailsViewModel.activityDetails
             ?.observe(viewLifecycleOwner, Observer { activityDetails ->
                 activityDescription.text = activityDetails?.activity
+
+                // Check if activity is saved
+                activityDetails?.key?.let {
+                    context?.let { context ->
+                        activityDetailsViewModel.checkSavedState(
+                            context, it
+                        )
+                    }
+                }
+            })
+
+        // Update save button state
+        activityDetailsViewModel.isSaved
+            ?.observe(viewLifecycleOwner, Observer {
+                setSaveButtonIcon(it)
             })
 
         // Display any error messages
@@ -85,8 +100,16 @@ class ActivityDetailsFragment : BaseFragment() {
         // Set click listener for save button
         subscribe(
             saveButton.clicks().subscribe {
-                context?.let { activityDetailsViewModel.saveActivity(it) }
+                context?.let { activityDetailsViewModel.handleSaveButtonClick(it) }
             }
         )
+    }
+
+    private fun setSaveButtonIcon(isSaved: Boolean) {
+        if (isSaved) {
+            saveButton.setImageResource(R.drawable.ic_favorite_24dp)
+        } else {
+            saveButton.setImageResource(R.drawable.ic_baseline_favorite_border_24)
+        }
     }
 }

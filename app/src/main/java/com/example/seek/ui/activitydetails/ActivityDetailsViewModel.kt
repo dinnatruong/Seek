@@ -1,6 +1,7 @@
 package com.example.seek.ui.activitydetails
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -29,6 +30,12 @@ class ActivityDetailsViewModel : ViewModel() {
     }
 
     val errorMessage: LiveData<String>? = _errorMessage
+
+    private var _isSaved = MutableLiveData<Boolean>().apply {
+        value = false
+    }
+
+    val isSaved: LiveData<Boolean>? = _isSaved
 
     private var subscription: Disposable? = null
 
@@ -83,14 +90,40 @@ class ActivityDetailsViewModel : ViewModel() {
         _errorMessage.value = "Failed to fetch activity details."
     }
 
-    fun saveActivity(context: Context) {
+    fun checkSavedState(context: Context, key: String) {
+        val activityDao = ActivityDatabase.getDatabase(context).activityDao()
+        val db = ActivityDBRepository(activityDao)
+
+        subscription =
+            db.getActivityByKey(key)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    { result -> onGetSavedActivitySuccess(result) },
+                    { onGetActivityDetailsError() })
+    }
+
+    private fun onGetSavedActivitySuccess(result: List<Activity>) {
+        _isSaved.value = result.isNotEmpty()
+    }
+
+    fun handleSaveButtonClick(context: Context) {
         val activityEntity = activityDetails?.value?.key?.let { Activity(key = it) }
         val activityDao = ActivityDatabase.getDatabase(context).activityDao()
         val activityDBRepository = ActivityDBRepository(activityDao)
 
         activityEntity?.let {
             viewModelScope.launch(Dispatchers.IO) {
-                activityDBRepository.insertActivity(it)
+
+                if (_isSaved.value == false) {
+                    // Add activity to saved list
+                    activityDBRepository.insertActivity(it)
+
+                } else {
+                    // Remove activity from saved list
+                    it.key?.let { key -> activityDBRepository.deleteActivity(key) }
+
+                }
             }
         }
     }

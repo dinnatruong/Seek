@@ -2,6 +2,7 @@ package com.example.seek.data.model
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import io.reactivex.Observable
 
 @Entity(tableName = "saved_activity_table", indices = [Index(value = ["activity_key"], unique = true)])
 data class Activity @Ignore constructor(
@@ -31,13 +32,13 @@ interface ActivityDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(activity: Activity): Long
 
-    @Delete
-    fun delete(activity: Activity)
+    @Query("DELETE FROM saved_activity_table WHERE activity_key = :key")
+    suspend fun delete(key: String)
 
     @Query("SELECT * FROM saved_activity_table ORDER BY id ASC")
     fun getAllActivities() : LiveData<List<Activity>>
 
-    @Query("SELECT * FROM saved_activity_table WHERE activity_key MATCH :key")
-    fun getActivityByKey(key: String) : LiveData<List<Activity>>
+    @Query("SELECT * FROM saved_activity_table WHERE activity_key = :key")
+    fun getActivityByKey(key: String) : Observable<List<Activity>>
 
 }
