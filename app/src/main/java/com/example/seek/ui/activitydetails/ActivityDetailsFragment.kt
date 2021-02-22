@@ -92,6 +92,7 @@ class ActivityDetailsFragment : BaseFragment() {
         subscribe(
             homeButton.clicks().subscribe {
                 findNavController().popBackStack()
+                activityKey?.let { findNavController().popBackStack() }
             }
         )
 
@@ -105,9 +106,9 @@ class ActivityDetailsFragment : BaseFragment() {
 
     private fun setSaveButtonIcon(isSaved: Boolean) {
         if (isSaved) {
-            saveButton.setImageResource(R.drawable.ic_favorite_24dp)
+            saveButton.setImageResource(R.drawable.ic_baseline_bookmark_24)
         } else {
-            saveButton.setImageResource(R.drawable.ic_baseline_favorite_border_24)
+            saveButton.setImageResource(R.drawable.ic_baseline_bookmark_border_24)
         }
     }
 
