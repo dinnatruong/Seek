@@ -52,10 +52,12 @@ class ActivityDetailsFragment : BaseFragment() {
         val activityType = categoryItem?.titleId?.let { getString(it) }
 
         // Fetch and display activity description
-        activityDetailsViewModel.getActivityDetails(activityType, activityKey)
+        context?.let {
+            activityDetailsViewModel.getActivityDetails(activityType, activityKey, it)
+        }
 
         activityDetailsViewModel.activityDetails
-            ?.observe(viewLifecycleOwner, Observer { activityDetails ->
+            .observe(viewLifecycleOwner, Observer { activityDetails ->
                 activityDescription.text = activityDetails?.activity
 
                 // Check if activity is saved
@@ -66,6 +68,12 @@ class ActivityDetailsFragment : BaseFragment() {
                         )
                     }
                 }
+            })
+
+        // Set background colour based on category
+        activityDetailsViewModel.backgroundResId
+            ?.observe(viewLifecycleOwner, Observer {
+                setBackground(it)
             })
 
         // Update save button state
@@ -79,16 +87,6 @@ class ActivityDetailsFragment : BaseFragment() {
             ?.observe(viewLifecycleOwner, Observer { errorMessage ->
                 errorMessage?.let { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() }
             })
-
-        // Set background colour based on activity category
-        context?.let {
-            descriptionBackground.background.setTint(
-                ContextCompat.getColor(
-                    it,
-                    categoryItem?.backgroundId ?: R.color.slate
-                )
-            )
-        }
 
         // Set click listener for home button
         subscribe(
@@ -110,6 +108,17 @@ class ActivityDetailsFragment : BaseFragment() {
             saveButton.setImageResource(R.drawable.ic_favorite_24dp)
         } else {
             saveButton.setImageResource(R.drawable.ic_baseline_favorite_border_24)
+        }
+    }
+
+    private fun setBackground(backgroundResId: Int?) {
+        context?.let {
+            descriptionBackground.background.setTint(
+                ContextCompat.getColor(
+                    it,
+                    backgroundResId ?: R.color.white
+                )
+            )
         }
     }
 }

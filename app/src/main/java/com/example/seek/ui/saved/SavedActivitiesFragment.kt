@@ -30,14 +30,12 @@ class SavedActivitiesFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Fetch list of ids of saved activities
+        // Fetch and display list of saved activities
         context?.let {
-            savedActivitiesViewModel.getSavedActivityIds(it)?.observe(viewLifecycleOwner, Observer { savedActivities ->
-                savedActivitiesViewModel.getSavedActivityDetails(savedActivities)
-            })
+            savedActivitiesViewModel.getSavedActivities(it)
+            savedActivityAdapter.setContext(it)
         }
 
-        // Display list of saved activities
         savedActivitiesViewModel.savedActivities.observe(viewLifecycleOwner, Observer { savedActivities ->
             savedActivityAdapter.setData(savedActivities)
             savedActivityAdapter.notifyDataSetChanged()
@@ -49,7 +47,7 @@ class SavedActivitiesFragment : BaseFragment() {
             adapter = savedActivityAdapter
         }
 
-        // Set click listener for saved activity
+        // Set click listener for saved activities
         subscribe(
             savedActivityAdapter.getSavedActivityClickSubject()
                 .subscribe {

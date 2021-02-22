@@ -1,10 +1,9 @@
 package com.example.seek.data.model
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import io.reactivex.Observable
 
-@Entity(tableName = "saved_activity_table", indices = [Index(value = ["activity_key"], unique = true)])
+@Entity(tableName = "saved_activity_table", indices = [Index(value = ["activity_key", "activity", "type", "participants"], unique = true)])
 data class Activity @Ignore constructor(
     @PrimaryKey(autoGenerate = true)
     var id: Int? = null,
@@ -12,19 +11,19 @@ data class Activity @Ignore constructor(
     @ColumnInfo(name = "activity_key")
     val key: String? = null,
 
-    @Ignore
+    @ColumnInfo(name = "activity")
     val activity: String? = null,
 
-    @Ignore
+    @ColumnInfo(name = "type")
     val type: String? = null,
 
-    @Ignore
+    @ColumnInfo(name = "participants")
     val participants: Int? = null,
 
     @Ignore
-    val category: Category? = null
+    var category: CategoryItem? = null
 ) {
-    constructor(id: Int?, key: String?) : this(id, key, null, null, null, null)
+    constructor(id: Int?, key: String?, activity: String?, type: String?, participants: Int?) : this(id, key, activity, type, participants, null)
 }
 
 @Dao
@@ -36,7 +35,7 @@ interface ActivityDao {
     suspend fun delete(key: String)
 
     @Query("SELECT * FROM saved_activity_table ORDER BY id ASC")
-    fun getAllActivities() : LiveData<List<Activity>>
+    fun getAllActivities() : Observable<List<Activity>>
 
     @Query("SELECT * FROM saved_activity_table WHERE activity_key = :key")
     fun getActivityByKey(key: String) : Observable<List<Activity>>

@@ -7,7 +7,8 @@ import androidx.lifecycle.ViewModel
 import com.example.seek.data.local.ActivityDBRepository
 import com.example.seek.data.local.ActivityDatabase
 import com.example.seek.data.model.Activity
-import com.example.seek.data.remote.RetrofitClient
+import com.example.seek.data.model.Category
+import com.example.seek.data.model.CategoryItem
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
@@ -28,36 +29,49 @@ class SavedActivitiesViewModel : ViewModel() {
 
     private var subscription: Disposable? = null
 
-    fun getSavedActivityIds(context: Context): LiveData<List<Activity>>? {
+    fun getSavedActivities(context: Context) {
         val activityDao = ActivityDatabase.getDatabase(context).activityDao()
         val db = ActivityDBRepository(activityDao)
-        return db.allSavedActivities
+
+        subscription =
+            db.getAllSavedActivities()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    { result -> onGetSavedActivitiesSuccess(result, context) },
+                    { onGetSavedActivitiesError() })
     }
 
-    fun getSavedActivityDetails(savedActivities: List<Activity>) {
-        _savedActivities.value = emptyList()
-        for (savedActivity in savedActivities) {
-            if (savedActivity.key !=  null) {
-                subscription =
-                    RetrofitClient.boredApiInterface.getActivityByKey(savedActivity.key)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                            { result -> onGetSavedActivityDetailsSuccess(result) },
-                            { onGetSavedActivityDetailsError() })
+    private fun onGetSavedActivitiesSuccess(result: List<Activity>, context: Context){
+        _savedActivities.value = result
+        setActivityCategories(context)
+    }
+
+    private fun onGetSavedActivitiesError(){
+        _errorMessage.value = "Failed to fetch saved activities."
+    }
+
+    private fun setActivityCategories(context: Context) {
+        savedActivities.value?.let { savedActivities ->
+
+            for (activity in savedActivities) {
+                val category = activity.type?.let { it -> getCategory(it, context) }
+                activity.category = category
             }
         }
     }
 
-    private fun onGetSavedActivityDetailsSuccess(result: Activity){
-        val newList = _savedActivities.value?.toMutableList()
-        newList?.add(result)
-        _savedActivities.value = newList
+    private fun getCategory(type: String, context: Context): CategoryItem? {
+        val categories = Category.itemMap.values.toList()
+
+        for (category in categories) {
+            if (context.getString(category.titleId).toLowerCase() == type) {
+                return category
+            }
+        }
+        return null
     }
 
-    private fun onGetSavedActivityDetailsError(){
-        _errorMessage.value = "Failed to fetch activity details."
-    }
 
     override fun onCleared() {
         super.onCleared()
