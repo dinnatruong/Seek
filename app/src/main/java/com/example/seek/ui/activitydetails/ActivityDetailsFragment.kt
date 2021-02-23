@@ -70,16 +70,16 @@ class ActivityDetailsFragment : BaseFragment() {
                 }
             })
 
-        // Set background colour based on category
-        activityDetailsViewModel.backgroundResId
-            ?.observe(viewLifecycleOwner, Observer {
-                setBackground(it)
-            })
-
         // Update save button state
         activityDetailsViewModel.isSaved
             ?.observe(viewLifecycleOwner, Observer {
                 setSaveButtonIcon(it)
+            })
+
+        // Set background colour based on category
+        activityDetailsViewModel.backgroundResId
+            ?.observe(viewLifecycleOwner, Observer {
+                setActivityDetailsBackground(it)
             })
 
         // Display any error messages
@@ -107,19 +107,17 @@ class ActivityDetailsFragment : BaseFragment() {
     private fun setSaveButtonIcon(isSaved: Boolean) {
         if (isSaved) {
             saveButton.setImageResource(R.drawable.ic_baseline_bookmark_24)
+            saveLabel.text = getString(R.string.remove_from_saved)
         } else {
             saveButton.setImageResource(R.drawable.ic_baseline_bookmark_border_24)
+            saveLabel.text = getString(R.string.save)
         }
     }
 
-    private fun setBackground(backgroundResId: Int?) {
+    private fun setActivityDetailsBackground(backgroundResId: Int?) {
         context?.let {
-            descriptionBackground.background.setTint(
-                ContextCompat.getColor(
-                    it,
-                    backgroundResId ?: R.color.white
-                )
-            )
+            val backgroundColor = ContextCompat.getColor(it, backgroundResId ?: R.color.white)
+            descriptionBackground.setBackgroundColor(backgroundColor)
         }
     }
 }

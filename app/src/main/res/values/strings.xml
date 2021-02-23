@@ -14,5 +14,6 @@
     <string name="busywork">Busywork</string>
     <string name="recreational">Recreational</string>
     <string name="save">Save</string>
+    <string name="remove_from_saved">Remove from Saved</string>
     <string name="activity_details">Activity Details</string>
 </resources>

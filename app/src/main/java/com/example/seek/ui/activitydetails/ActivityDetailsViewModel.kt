@@ -157,6 +157,7 @@ class ActivityDetailsViewModel : ViewModel() {
         super.onCleared()
         _activityDetails.value = null
         _errorMessage.value = null
+        _backgroundResId.value = null
         subscription?.dispose()
     }
 }

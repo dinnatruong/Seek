@@ -23,7 +23,8 @@
         android:layout_marginBottom="10dp"
         android:gravity="bottom"
         android:ellipsize="end"
-        android:adjustViewBounds="true"/>
+        android:adjustViewBounds="true"
+        android:hyphenationFrequency="full"/>
 
     <ImageView
         android:id="@+id/categoryIcon"
